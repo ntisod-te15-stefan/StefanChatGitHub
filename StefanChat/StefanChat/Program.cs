@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace StefanChat
 {
@@ -26,10 +23,13 @@ namespace StefanChat
             socket.EnableBroadcast = true;
             var ep = new IPEndPoint(IPAddress.Broadcast, ListenPort);
 
+            Thread.Sleep(1000);
+
             while (true)
             {
                 Console.Write(">");
                 var msg = Console.ReadLine();
+
 
                 var sendbuf = Encoding.UTF8.GetBytes(msg);
                 socket.SendTo(sendbuf, ep);
@@ -46,10 +46,11 @@ namespace StefanChat
             {
                 while (true)
                 {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     var groupEP = new IPEndPoint(IPAddress.Any, ListenPort);
                     var bytes = listener.Receive(ref groupEP);
                     Console.WriteLine("Revieved broadcast from {0} : {1}\n", groupEP.ToString(),
-                        Encoding.UTF8.GetString(bytes, 0, bytes.Length));
+                       DateTime.Now.ToString("HH:mm:ss") + " " + Encoding.UTF8.GetString(bytes, 0, bytes.Length));
                 }
             }
             catch (Exception e)
